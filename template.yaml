@@ -164,13 +164,9 @@ Resources:
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: N
-        - AttributeName: count
-          AttributeType: N
       KeySchema:
         - AttributeName: id
           KeyType: HASH
-        - AttributeName: count
-          KeyType: RANGE
 
   # S3 Bucket to host single page app website
   WebSiteBucket:

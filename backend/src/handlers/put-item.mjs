@@ -62,7 +62,7 @@ export const putItemHandler = async (event, context) => {
             },
           })
         );
-        body = `Put item ${requestJSON.id}`;
+        body = `Put item count ${requestJSON.count}`;
         break;
       default:
         throw new Error(`Unsupported route: "${event.routeKey}"`);
