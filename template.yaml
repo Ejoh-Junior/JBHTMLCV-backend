@@ -168,90 +168,90 @@ Resources:
         - AttributeName: id
           KeyType: HASH
 
-  # S3 Bucket to host single page app website
-  WebSiteBucket:
-    Type: "AWS::S3::Bucket"
-  WebSiteBucketPolicy:
-    Type: "AWS::S3::BucketPolicy"
-    Properties:
-      Bucket: !Ref WebSiteBucket
-      PolicyDocument:
-        Version: "2012-10-17"
-        Id: "PolicyForCloudFrontPrivateContent"
-        Statement:
-          - Sid: "AllowCloudFrontServicePrincipal"
-            Effect: "Allow"
-            Principal:
-              Service: "cloudfront.amazonaws.com"
-            Action: "s3:GetObject"
-            Resource: !Join ["", ["arn:aws:s3:::", !Ref WebSiteBucket, "/*"]]
-            Condition:
-              StringEquals:
-                "AWS:SourceArn":
-                  !Join [
-                    "",
-                    [
-                      "arn:aws:cloudfront::",
-                      !Ref "AWS::AccountId",
-                      ":distribution/",
-                      !Ref CloudFrontDistribution,
-                    ],
-                  ]
+  # # S3 Bucket to host single page app website
+  # WebSiteBucket:
+  #   Type: "AWS::S3::Bucket"
+  # WebSiteBucketPolicy:
+  #   Type: "AWS::S3::BucketPolicy"
+  #   Properties:
+  #     Bucket: !Ref WebSiteBucket
+  #     PolicyDocument:
+  #       Version: "2012-10-17"
+  #       Id: "PolicyForCloudFrontPrivateContent"
+  #       Statement:
+  #         - Sid: "AllowCloudFrontServicePrincipal"
+  #           Effect: "Allow"
+  #           Principal:
+  #             Service: "cloudfront.amazonaws.com"
+  #           Action: "s3:GetObject"
+  #           Resource: !Join ["", ["arn:aws:s3:::", !Ref WebSiteBucket, "/*"]]
+  #           Condition:
+  #             StringEquals:
+  #               "AWS:SourceArn":
+  #                 !Join [
+  #                   "",
+  #                   [
+  #                     "arn:aws:cloudfront::",
+  #                     !Ref "AWS::AccountId",
+  #                     ":distribution/",
+  #                     !Ref CloudFrontDistribution,
+  #                   ],
+  #                 ]
 
-  # CloudFront Distribution for hosting the single page app website
-  CloudFrontDistribution:
-    Type: "AWS::CloudFront::Distribution"
-    Properties:
-      DistributionConfig:
-        Origins:
-          - DomainName: !GetAtt WebSiteBucket.RegionalDomainName
-            Id: "myS3Origin"
-            OriginAccessControlId: !GetAtt CloudFrontOriginAccessControl.Id
-            S3OriginConfig:
-              OriginAccessIdentity: ""
-        Enabled: true
-        DefaultRootObject: "index.html"
-        HttpVersion: "http2"
-        DefaultCacheBehavior:
-          AllowedMethods:
-            - "DELETE"
-            - "GET"
-            - "HEAD"
-            - "OPTIONS"
-            - "PATCH"
-            - "POST"
-            - "PUT"
-          CachedMethods:
-            - "GET"
-            - "HEAD"
-          TargetOriginId: "myS3Origin"
-          ForwardedValues:
-            QueryString: false
-            Cookies:
-              Forward: "none"
-          ViewerProtocolPolicy: "allow-all"
-          MinTTL: 0
-          DefaultTTL: 3600
-          MaxTTL: 86400
-        PriceClass: "PriceClass_200"
-        Restrictions:
-          GeoRestriction:
-            RestrictionType: "whitelist"
-            Locations:
-              - "US"
-              - "CA"
-              - "GB"
-              - "DE"
-        ViewerCertificate:
-          CloudFrontDefaultCertificate: true
-  CloudFrontOriginAccessControl:
-    Type: "AWS::CloudFront::OriginAccessControl"
-    Properties:
-      OriginAccessControlConfig:
-        Name: !Sub "${WebSiteBucket} OAC"
-        OriginAccessControlOriginType: "s3"
-        SigningBehavior: "always"
-        SigningProtocol: "sigv4"
+  # # CloudFront Distribution for hosting the single page app website
+  # CloudFrontDistribution:
+  #   Type: "AWS::CloudFront::Distribution"
+  #   Properties:
+  #     DistributionConfig:
+  #       Origins:
+  #         - DomainName: !GetAtt WebSiteBucket.RegionalDomainName
+  #           Id: "myS3Origin"
+  #           OriginAccessControlId: !GetAtt CloudFrontOriginAccessControl.Id
+  #           S3OriginConfig:
+  #             OriginAccessIdentity: ""
+  #       Enabled: true
+  #       DefaultRootObject: "index.html"
+  #       HttpVersion: "http2"
+  #       DefaultCacheBehavior:
+  #         AllowedMethods:
+  #           - "DELETE"
+  #           - "GET"
+  #           - "HEAD"
+  #           - "OPTIONS"
+  #           - "PATCH"
+  #           - "POST"
+  #           - "PUT"
+  #         CachedMethods:
+  #           - "GET"
+  #           - "HEAD"
+  #         TargetOriginId: "myS3Origin"
+  #         ForwardedValues:
+  #           QueryString: false
+  #           Cookies:
+  #             Forward: "none"
+  #         ViewerProtocolPolicy: "allow-all"
+  #         MinTTL: 0
+  #         DefaultTTL: 3600
+  #         MaxTTL: 86400
+  #       PriceClass: "PriceClass_200"
+  #       Restrictions:
+  #         GeoRestriction:
+  #           RestrictionType: "whitelist"
+  #           Locations:
+  #             - "US"
+  #             - "CA"
+  #             - "GB"
+  #             - "DE"
+  #       ViewerCertificate:
+  #         CloudFrontDefaultCertificate: true
+  # CloudFrontOriginAccessControl:
+  #   Type: "AWS::CloudFront::OriginAccessControl"
+  #   Properties:
+  #     OriginAccessControlConfig:
+  #       Name: !Sub "${WebSiteBucket} OAC"
+  #       OriginAccessControlOriginType: "s3"
+  #       SigningBehavior: "always"
+  #       SigningProtocol: "sigv4"
 Outputs:
   # APIGatewayEndpoint:
   #   Description: "API Gateway endpoint URL for Prod stage"
@@ -259,12 +259,12 @@ Outputs:
   ApiEndpoint:
     Description: "The invoke URL for our HTTP API"
     Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/items"
-  CloudFrontDistributionId:
-    Description: "CloudFront Distribution ID for hosting web front end"
-    Value: !Ref CloudFrontDistribution
-  CloudFrontDistributionDomainName:
-    Description: "CloudFront Distribution Domain Name for accessing web front end"
-    Value: !GetAtt CloudFrontDistribution.DomainName
-  WebS3BucketName:
-    Description: "S3 Bucket for hosting web frontend"
-    Value: !Ref WebSiteBucket
+  # CloudFrontDistributionId:
+  #   Description: "CloudFront Distribution ID for hosting web front end"
+  #   Value: !Ref CloudFrontDistribution
+  # CloudFrontDistributionDomainName:
+  #   Description: "CloudFront Distribution Domain Name for accessing web front end"
+  #   Value: !GetAtt CloudFrontDistribution.DomainName
+  # WebS3BucketName:
+  #   Description: "S3 Bucket for hosting web frontend"
+  #   Value: !Ref WebSiteBucket
