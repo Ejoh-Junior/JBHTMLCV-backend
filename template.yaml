@@ -3,7 +3,7 @@
 
 # The AWSTemplateFormatVersion identifies the capabilities of the template
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html
-#test 7
+#test 8
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   ResumeChallengeTemplate
